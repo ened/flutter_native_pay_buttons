@@ -21,7 +21,23 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: NativePayButton(),
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              for (IosPaymentButtonType type in IosPaymentButtonType.values)
+                for (IosPaymentButtonStyle style
+                    in IosPaymentButtonStyle.values) ...[
+                  NativePayButton(
+                    iosPaymentButtonType: type,
+                    iosPaymentButtonStyle: style,
+                  ),
+                  SizedBox(height: 8),
+                ]
+            ],
+          ),
+        ),
       ),
     );
   }
