@@ -1,10 +1,29 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+
+/// https://developers.google.com/pay/api/android/guides/brand-guidelines
+enum AndroidPaymentButtonStyle {
+  badge,
+  badgeNoShadow,
+  buyWith,
+  buyWithNoShadow,
+}
+
+/// Follows the enumerations at
+/// - https://developer.apple.com/documentation/passkit/pkpaymentbuttonstyle
+enum IosPaymentButtonStyle {
+  white,
+  whiteOutline,
+  black,
+}
 
 /// Follows the enumeration at https://developer.apple.com/documentation/passkit/pkpaymentbuttontype
 enum IosPaymentButtonType {
@@ -18,45 +37,49 @@ enum IosPaymentButtonType {
   subscribe,
 }
 
-/// Follows the enumeration at https://developer.apple.com/documentation/passkit/pkpaymentbuttonstyle
-enum IosPaymentButtonStyle {
-  white,
-  whiteOutline,
-  black,
-}
+const _viewType = 'asia.ivity/native_pay_button';
 
 class NativePayButton extends StatelessWidget {
   const NativePayButton({
     Key key,
-    this.iosPaymentButtonType = IosPaymentButtonType.plain,
+    this.androidPaymentButtonStyle,
     this.iosPaymentButtonStyle,
+    this.iosPaymentButtonType = IosPaymentButtonType.plain,
+    this.onPressed,
   }) : super(key: key);
 
-  final IosPaymentButtonType iosPaymentButtonType;
+  final AndroidPaymentButtonStyle androidPaymentButtonStyle;
   final IosPaymentButtonStyle iosPaymentButtonStyle;
+  final IosPaymentButtonType iosPaymentButtonType;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 212 / 38,
-      child: GestureDetector(
-        onTap: () {
-          print('tap');
-        },
-        onDoubleTap: () {
-          print('tap tap');
-        },
-        child: UiKitView(
-          viewType: 'asia.ivity/native_pay_button',
-          creationParams: {
-            'type': iosPaymentButtonType.index,
-            'style': iosPaymentButtonStyle.index,
-          },
-          creationParamsCodec: StandardMessageCodec(),
-          gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
-            // Factory<OneSequenceGestureRecognizer>(() => TapGestureRecognizer()),
-          ].toSet(),
-        ),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => onPressed?.call(),
+      child: AspectRatio(
+        aspectRatio: 16/2,
+        child: Platform.isIOS
+            ? UiKitView(
+                viewType: _viewType,
+                creationParams: {
+                  'style': iosPaymentButtonStyle.index,
+                  'type': iosPaymentButtonType.index,
+                },
+                hitTestBehavior: PlatformViewHitTestBehavior.transparent,
+                creationParamsCodec: StandardMessageCodec(),
+                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{},
+              )
+            : AndroidView(
+                viewType: _viewType,
+                creationParams: {
+                  'style': androidPaymentButtonStyle.index,
+                },
+                hitTestBehavior: PlatformViewHitTestBehavior.transparent,
+                creationParamsCodec: StandardMessageCodec(),
+                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{},
+              ),
       ),
     );
   }

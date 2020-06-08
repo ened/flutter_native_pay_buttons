@@ -41,12 +41,16 @@ class PaymentButtonWrapper: NSObject, FlutterPlatformView {
     }
     
     func view() -> UIView {
-        let tmp = UIView(frame: self.frame)
+        var button: PKPaymentButton
         if #available(iOS 9.0, *) {
-            tmp.addSubview(PKPaymentButton(paymentButtonType: self.type, paymentButtonStyle: self.style))
+            button = PKPaymentButton(paymentButtonType: self.type, paymentButtonStyle: self.style)
         } else {
-            tmp.addSubview(PKPaymentButton())
+            button = PKPaymentButton()
         }
+        let tmp = UIView(frame: self.frame)
+        tmp.addSubview(button)
+        button.bindFrameToSuperviewBounds()
+        
         return tmp
     }
 }
@@ -58,5 +62,28 @@ extension SwiftNativePayButtonsPlugin : FlutterPlatformViewFactory {
     
     public func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
         return PaymentButtonWrapper(frame, viewId, args)
+    }
+}
+
+extension UIView {
+
+    /// Adds constraints to this `UIView` instances `superview` object to make sure this always has the same size as the superview.
+    /// Please note that this has no effect if its `superview` is `nil` – add this `UIView` instance as a subview before calling this.
+    func bindFrameToSuperviewBounds() {
+        guard let superview = self.superview else {
+            print("Error! `superview` was nil – call `addSubview(view: UIView)` before calling `bindFrameToSuperviewBounds()` to fix this.")
+            return
+        }
+
+        self.translatesAutoresizingMaskIntoConstraints = false
+        if #available(iOS 9.0, *) {
+            self.topAnchor.constraint(equalTo: superview.topAnchor, constant: 0).isActive = true
+            self.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: 0).isActive = true
+            self.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 0).isActive = true
+            self.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: 0).isActive = true
+        } else {
+            // Fallback on earlier versions
+        }
+
     }
 }
