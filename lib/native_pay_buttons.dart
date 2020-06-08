@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
+/// Follows the enumeration at https://developer.apple.com/documentation/passkit/pkpaymentbuttontype
 enum IosPaymentButtonType {
   plain,
   buy,
@@ -17,6 +18,7 @@ enum IosPaymentButtonType {
   subscribe,
 }
 
+/// Follows the enumeration at https://developer.apple.com/documentation/passkit/pkpaymentbuttonstyle
 enum IosPaymentButtonStyle {
   white,
   whiteOutline,
@@ -24,19 +26,38 @@ enum IosPaymentButtonStyle {
 }
 
 class NativePayButton extends StatelessWidget {
+  const NativePayButton({
+    Key key,
+    this.iosPaymentButtonType = IosPaymentButtonType.plain,
+    this.iosPaymentButtonStyle,
+  }) : super(key: key);
+
+  final IosPaymentButtonType iosPaymentButtonType;
+  final IosPaymentButtonStyle iosPaymentButtonStyle;
+
   @override
   Widget build(BuildContext context) {
-    return UiKitView(
-      viewType: 'asia.ivity/native_pay_button',
-      creationParams: {
-        'woof': 'woof',
-      },
-      creationParamsCodec: StandardMessageCodec(),
-      gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
-        Factory<OneSequenceGestureRecognizer>(
-          () => TapGestureRecognizer(),
+    return AspectRatio(
+      aspectRatio: 212 / 38,
+      child: GestureDetector(
+        onTap: () {
+          print('tap');
+        },
+        onDoubleTap: () {
+          print('tap tap');
+        },
+        child: UiKitView(
+          viewType: 'asia.ivity/native_pay_button',
+          creationParams: {
+            'type': iosPaymentButtonType.index,
+            'style': iosPaymentButtonStyle.index,
+          },
+          creationParamsCodec: StandardMessageCodec(),
+          gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+            // Factory<OneSequenceGestureRecognizer>(() => TapGestureRecognizer()),
+          ].toSet(),
         ),
-      ].toSet(),
+      ),
     );
   }
 }
