@@ -59,7 +59,7 @@ class NativePayButton extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       onTap: () => onPressed?.call(),
       child: AspectRatio(
-        aspectRatio: 16/2,
+        aspectRatio: Platform.isIOS ? 16/2.5 : 16/2.5,
         child: Platform.isIOS
             ? UiKitView(
                 viewType: _viewType,
