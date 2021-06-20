@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -41,11 +39,11 @@ const _viewType = 'asia.ivity/native_pay_button';
 
 class NativePayButton extends StatelessWidget {
   const NativePayButton({
-    Key key,
-    this.androidPaymentButtonStyle,
-    this.iosPaymentButtonStyle,
+    Key? key,
+    required this.androidPaymentButtonStyle,
+    required this.iosPaymentButtonStyle,
     this.iosPaymentButtonType = IosPaymentButtonType.plain,
-    this.onPressed,
+    required this.onPressed,
   }) : super(key: key);
 
   final AndroidPaymentButtonStyle androidPaymentButtonStyle;
@@ -57,9 +55,9 @@ class NativePayButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: () => onPressed?.call(),
+      onTap: () => onPressed.call(),
       child: AspectRatio(
-        aspectRatio: Platform.isIOS ? 16/2.5 : 16/2.5,
+        aspectRatio: Platform.isIOS ? 16 / 2.5 : 16 / 2.5,
         child: Platform.isIOS
             ? UiKitView(
                 viewType: _viewType,
@@ -82,17 +80,5 @@ class NativePayButton extends StatelessWidget {
               ),
       ),
     );
-  }
-}
-
-class NativePayButtons {
-  final MethodChannel _channel =
-      const MethodChannel('asia.ivity/native_pay_buttons');
-
-  NativePayButtons() {}
-
-  Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
   }
 }

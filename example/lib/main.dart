@@ -1,9 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:native_pay_buttons/native_pay_buttons.dart';
 
 void main() {
@@ -35,6 +32,7 @@ class _MyAppState extends State<MyApp> {
                       in AndroidPaymentButtonStyle.values)
                     NativePayButton(
                       androidPaymentButtonStyle: style,
+                      iosPaymentButtonStyle: IosPaymentButtonStyle.black,
                       onPressed: () {
                         print('pressed - android');
                       },
@@ -45,6 +43,8 @@ class _MyAppState extends State<MyApp> {
                     for (IosPaymentButtonStyle style
                         in IosPaymentButtonStyle.values) ...[
                       NativePayButton(
+                        androidPaymentButtonStyle:
+                            AndroidPaymentButtonStyle.badge,
                         iosPaymentButtonType: type,
                         iosPaymentButtonStyle: style,
                         onPressed: () {

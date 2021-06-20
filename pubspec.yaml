@@ -1,12 +1,11 @@
 name: native_pay_buttons
 description: A new flutter plugin project.
 version: 0.0.1
-author:
-homepage:
+homepage: https://github.com/ened/flutter_native_pay_buttons
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
-  flutter: ">=1.10.0"
+  sdk: ">=2.13.0 <3.0.0"
+  flutter: ">=1.12.13+hotfix.5"
 
 dependencies:
   flutter:
